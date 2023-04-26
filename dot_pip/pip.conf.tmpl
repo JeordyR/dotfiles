@@ -1,0 +1,8 @@
+[global]
+trusted-host = pypi.python.org
+               pypi.org
+               files.pythonhosted.org
+
+{{ if eq .chezmoi.environment "work" }}
+extra-index-url = https://art.nwie.net/artifactory/api/pypi/pypi/simple
+{{ end }}

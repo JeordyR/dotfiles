@@ -1,0 +1,10 @@
+{{- $email := promptStringOnce . "email" "Email address" -}}
+
+[data]
+    email = {{ $email | quote }}
+
+    {{ if eq .chezmoi.hostname "NWC02X102BHV2T" "NWH6MXMN7X7H" }}
+    environment = "work"
+    {{ else }}
+    environment = "personal"
+    {{ end }}

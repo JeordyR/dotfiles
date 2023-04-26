@@ -1,0 +1,184 @@
+########## General Aliases (All Platforms) ##########
+
+# CD Aliases
+alias sc='cd ~/Scripts'
+
+# Command Aliases
+alias edit='code-insiders'
+alias editt='nvim'
+alias j='z'
+alias f='zi'
+alias g='lazygit'
+alias zsh-update-plugins='find "$ZDOTDIR/plugins" -type d -exec test -e "{}/.git"; -print0 | xargs -I {} -0 git -C {} pull -q'
+
+# Python Aliases
+alias covhtml='coverage run --branch --source=. --omit="*test*","setup.py" -m pytest; coverage html; open htmlcov/index.html'
+alias cov='coverage run --branch --source=. --omit="*test*","setup.py" -m pytest; coverage report -m'
+alias test="python -m pytest"
+alias activate="source .venv/bin/activate"
+alias pythonbuild="python3 setup.py sdist bdist_wheel"
+alias pypiupload="python3 -m twine upload dist/*"
+
+# Kubernetes Aliases
+alias kube='kubectl'
+alias ns='kubectl config set-context --current --namespace'
+
+# Git Aliases
+alias co='git checkout'
+alias pull='git pull && git pull && git submodule update --init --recursive'
+alias push='git push'
+alias status='git status'
+alias commit='git add .; git commit -a -m'
+alias pullall='for i in */.git; do ( echo ""; echo $i; cd $i/..; git pull; ); done'
+
+# General
+alias rf='sudo rm -rf'
+alias unrarall='unrar e -r *.rar'
+alias home='cd ~'
+alias c='clear'
+alias ports='netstat -tulanp'
+alias history='history 0'
+
+# DOG
+if command -v dog 1>/dev/null 2>&1; then
+    alias dig='dog'
+    alias nslookup='dog'
+else
+    echo "DOG not installed, defaulting to DIG."
+    alias dig='dig +nocmd +noall +answer'
+fi
+
+# DUST
+if command -v dust 1>/dev/null 2>&1; then
+    alias du='dust'
+else
+    echo "DUST not installed, defaulting to DU."
+    alias du='du -h'
+fi
+
+# EXA
+if command -v exa 1>/dev/null 2>&1; then
+    alias ls='exa --long --header --group --git --icons'
+else
+    echo "EXA not installed, defaulting to LS."
+
+    {{ if eq .chezmoi.os "darwin" }}
+    alias ls='ls -G'
+    {{ else if eq .chezmoi.os "linux" }}
+    alias ls='ls --color=auto'
+    {{ end }}
+fi
+
+# FD
+if command -v fd 1>/dev/null 2>&1; then
+    alias find='fd'
+fi
+
+# RipGrep
+if command -v rg 1>/dev/null 2>&1; then
+    alias grep='rg'
+else
+    echo "RipGrep not installed."
+    alias grep='grep --color=auto'
+fi
+
+# # LSD
+# if command -v lsd 1>/dev/null 2>&1; then
+#     alias ls='lsd --group-dirs first'
+# else
+#     echo "LSD not installed."
+
+#     case "$(uname -s)" in
+#         Darwin)
+#             alias ls='ls -G'
+#             ;;
+#         Linux)
+#             alias ls='ls --color=auto'
+#             ;;
+#         *)
+#             ;;
+#     esac
+# fi
+
+alias la='ls -a'
+alias ll='ls -la'
+alias lt='ls --tree'
+
+
+{{ /* --- Platform-Specific Aliases --- */ }}
+# Package Manager Aliases
+{{ if eq .chezmoi.os "darwin" }}
+alias update='brew update'
+alias upgrade='brew upgrade'
+alias install='brew install'
+alias uninstall='brew uninstall'
+alias installed='brew list'
+alias search='brew search'
+{{ else if eq .chezmoi.os "linux" }}
+alias update='sudo apt update'
+alias upgrade='sudo apt upgrade -y'
+alias install='sudo apt install'
+alias uninstall='sudo apt remove'
+alias installed='sudo apt list --installed'
+alias search='sudo apt search'
+{{ end }}
+
+
+{{ /* --- Work Only Aliases --- */ }}
+{{ if eq .chezmoi.environment "work" }}
+# CD Aliases
+alias gh='cd ~/Scripts/GitHub'
+alias gho='cd ~/Scripts/GitHub-Other'
+alias scat='cd ~/Scripts/ServiceCatalog'
+
+# Command Aliases
+alias bstatus="nw-aws utils check-status"
+alias bstatussec="nw-aws utils check-status --profile SecSvcsTools"
+alias nwcerts="cd ~/Scripts/GitHub-Other/NWCerts; git pull; cd -; cat ~/Scripts/Github-Other/NWCerts/*.cer"
+
+# Amazon Aliases
+alias testdeploy='sls deploy --stage=test --region=us-east-1 --aws-profile=TestAccountProfile'
+alias cwf='aws logs tail --format short --follow'
+{{ end }}
+
+
+{{ /* --- Unraid Only Aliases --- */ }}
+{{ if (and (eq .chezmoi.environment "personal") (eq .chezmoi.hostname "Unraid")) }}
+# SSH Aliases
+alias plex='ssh 10.10.1.3'
+alias pihole='ssh 10.10.1.53'
+
+# CD Aliases
+alias media='cd /mnt/user/media'
+alias data='cd /mnt/user/data'
+alias download='cd /mnt/download-pool/download'
+alias appdata='cd /mnt/appdata-pool/appdata'
+alias cache='cd /mnt/cache-pool'
+alias backup='cd /mnt/user/backup'
+{{ /* --- Personal MacOS Aliases --- */ }}
+{{ else if (and (eq .chezmoi.environment "personal") (eq .chezmoi.os "darwin")) }}
+# SSH Aliases
+alias unraid='ssh root@10.10.1.1'
+alias plex='ssh 10.10.1.3'
+alias pihole='ssh 10.10.1.53'
+
+# CD Aliases
+alias media='cd /Volumes/media'
+alias data='cd /Volumes/data'
+alias backup='cd /Volumes/backup'
+alias download='cd /Volumes/download'
+alias appdata='cd /Volumes/appdata'
+{{ /* --- Personal Linux Aliases --- */ }}
+{{ else if (and (eq .chezmoi.environment "personal") (eq .chezmoi.os "linux")) }}
+# SSH Aliases
+alias unraid='ssh root@10.10.1.1'
+alias plex='ssh 10.10.1.3'
+alias pihole='ssh 10.10.1.53'
+
+# CD Aliases
+alias media='cd /mnt/media'
+alias data='cd /mnt/data'
+alias backup='cd /mnt/backup'
+alias download='cd /mnt/download'
+alias appdata='cd /mnt/appdata'
+{{ end }}
